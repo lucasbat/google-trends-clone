@@ -1,0 +1,128 @@
+npm install -D sass-embedded
+
+
+CORES:
+rgb(52, 168, 82)
+rgb(234, 67, 53)
+rgb(250, 187, 5)
+rgb(66, 133, 244)
+
+rgb(66, 133, 244)
+rgb(250, 187, 5)
+rgb(234, 67, 53)
+rgb(52, 168, 82)
+
+
+5x5
+
+BUSCAS:
+  "brazil": [
+        "Benfica",
+        "Beatriz Haddad Maia",
+        "Juan Brujo",
+        "Atalanta",
+        "Atletico de Madrid",
+        "Amazonas",
+        "Twitter",
+        "Serie B",
+        "Vila Nova x Chapecoense",
+        "Am\u00e9rica-MG x Paysandu",
+        "Selic",
+        "Inter Miami",
+        "Bologna",
+        "Amazonas FC",
+        "Celtic",
+        "Tottenham",
+        "Sport Club Corinthians Paulista",
+        "Saopaulofc",
+        "Goias",
+        "Thiago Avanci"
+    ],
+
+
+
+
+SUGESTÂO CHATGPT para transição de cores dos cards
+
+<template>
+  <div class="card-grid">
+    <!-- Renderiza 25 cards com background animado -->
+    <div 
+      v-for="(color, index) in colors" 
+      :key="index" 
+      class="card"
+      :class="{ 'animate': isAnimating }" 
+      :style="{ '--color': color }"
+    >
+      Card {{ index + 1 }}
+    </div>
+  </div>
+  <button @click="changeColors">Change Colors</button>
+</template>
+
+<script setup>
+import { reactive, ref } from "vue";
+
+// Array de cores inicial para os cards
+let colors = reactive(Array(25).fill('rgb(52, 168, 82)'));
+
+// Cores a serem aplicadas de forma linear
+let colorPalette = reactive([
+  'rgb(52, 168, 82)',  // Verde
+  'rgb(234, 67, 53)',  // Vermelho
+  'rgb(250, 187, 5)',  // Amarelo
+  'rgb(66, 133, 244)', // Azul
+]);
+
+// Controle de animação
+let isAnimating = ref(false);
+
+// Função para alterar linearmente as cores dos cards
+function changeColors() {
+  if (isAnimating.value) return; // Evita múltiplas animações ao mesmo tempo
+  isAnimating.value = true;
+
+  // Anima cada card com um atraso progressivo
+  for (let i = 0; i < colors.length; i++) {
+    setTimeout(() => {
+      colors[i] = colorPalette[i % colorPalette.length]; // Muda a cor de cada card de forma cíclica
+    }, i * 300); // Atraso progressivo para efeito de "empurrar"
+  }
+
+  // Reseta a animação após um tempo
+  setTimeout(() => {
+    isAnimating.value = false;
+  }, colors.length * 300 + 2000); // Espera todas as animações terminarem
+}
+</script>
+
+<style lang="scss" scoped>
+/* Define o grid para os cards */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 colunas de igual tamanho */
+  grid-template-rows: repeat(5, 1fr); /* 5 linhas de igual tamanho */
+  height: 100vh; /* Ocupa toda a altura da janela */
+  background-color: #f0f0f0; /* Cor de fundo */
+  gap: 10px; /* Espaço entre os cards */
+}
+
+/* Estilo dos cards individuais */
+.card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.5rem;
+  border-radius: 8px; /* Arredonda os cantos */
+  background: linear-gradient(90deg, var(--color) 50%, #4caf50 50%);
+  background-size: 200%;
+  background-position: 100%;
+  transition: background-position 2s ease;
+}
+
+/* Adiciona a classe de animação */
+.card.animate {
+  background-position: 0%;
+}
+</style>
